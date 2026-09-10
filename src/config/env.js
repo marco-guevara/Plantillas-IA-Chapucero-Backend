@@ -20,6 +20,10 @@ export const env = {
     process.env.DATABASE_URL ||
     'postgresql://postgres:postgres@localhost:5432/laminas_ia',
   databaseSsl: parseBoolean(process.env.DATABASE_SSL),
+  databaseRequired: parseBoolean(
+    process.env.DATABASE_REQUIRED,
+    process.env.NODE_ENV === 'production',
+  ),
   dbLogging: parseBoolean(process.env.DB_LOGGING),
   corsOrigins: parseList(process.env.CORS_ORIGINS || 'http://localhost:5173'),
   cookieDomain: process.env.COOKIE_DOMAIN || undefined,

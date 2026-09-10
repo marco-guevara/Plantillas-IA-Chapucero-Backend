@@ -25,11 +25,13 @@ Cuando el frontend pase a consumir esta API, `VITE_API_BASE_URL` debe apuntar a 
 
 ## Scripts
 
-- `npm run dev`: API con nodemon.
+- `npm run dev`: API con `node --watch`.
 - `npm start`: API en modo Node.
 - `npm run check`: validacion rapida de sintaxis.
 - `npm run db:sync`: sincroniza modelos Sequelize sin `alter`.
 - `npm run db:create-admin`: crea o actualiza el primer cliente admin desde `.env`.
+
+Si Windows bloquea el modo watch con `spawn EPERM`, usar `npm start` para levantar la API sin recarga automatica.
 
 ## Endpoints iniciales
 

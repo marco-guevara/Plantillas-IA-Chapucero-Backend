@@ -4,7 +4,17 @@ import { assertProductionSecrets, env } from './config/env.js';
 
 const startServer = async () => {
   assertProductionSecrets();
-  await connectDatabase();
+
+  try {
+    await connectDatabase();
+    console.log('Database connection ready');
+  } catch (error) {
+    if (env.databaseRequired) {
+      throw error;
+    }
+
+    console.warn('Database connection skipped:', error.message);
+  }
 
   const app = createApp();
   app.listen(env.port, () => {

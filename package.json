@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/server.js",
+    "dev": "node --watch src/server.js",
     "start": "node src/server.js",
     "check": "node --check src/server.js",
     "db:sync": "node src/db/sync.js",
@@ -35,8 +35,5 @@
     "pg": "^8.23.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.8"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.14"
   }
 }
