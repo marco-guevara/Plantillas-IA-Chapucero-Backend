@@ -50,6 +50,9 @@ Si Windows bloquea el modo watch con `spawn EPERM`, usar `npm start` para levant
 - `GET /api/auth/me`
 - `GET /api/auth/sessions`
 - `DELETE /api/auth/sessions/:id`
+- `GET /api/clients`
+- `POST /api/clients`
+- `PATCH /api/clients/:id`
 - `GET /api/laminas/queue/:category`
 - `GET /api/laminas/history`
 - `GET /api/laminas/history/:id`

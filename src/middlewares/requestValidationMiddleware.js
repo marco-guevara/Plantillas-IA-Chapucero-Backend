@@ -42,6 +42,73 @@ export const validateLoginBody = (req, _res, next) => {
   }
 };
 
+export const validateCreateClientBody = (req, _res, next) => {
+  try {
+    const errors = [];
+
+    if (!req.body?.email || typeof req.body.email !== 'string') {
+      errors.push({ field: 'email', message: 'Email is required' });
+    }
+
+    if (!req.body?.password || String(req.body.password).length < 12) {
+      errors.push({
+        field: 'password',
+        message: 'Password with at least 12 characters is required',
+      });
+    }
+
+    if (!req.body?.name || typeof req.body.name !== 'string') {
+      errors.push({ field: 'name', message: 'Name is required' });
+    }
+
+    if (
+      req.body?.role &&
+      !['admin', 'editor', 'viewer'].includes(String(req.body.role))
+    ) {
+      errors.push({ field: 'role', message: 'Unsupported role' });
+    }
+
+    if (errors.length) fail(errors);
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const validateUpdateClientBody = (req, _res, next) => {
+  try {
+    const errors = [];
+
+    if (
+      req.body?.role &&
+      !['admin', 'editor', 'viewer'].includes(String(req.body.role))
+    ) {
+      errors.push({ field: 'role', message: 'Unsupported role' });
+    }
+
+    if (
+      req.body?.status &&
+      !['active', 'disabled'].includes(String(req.body.status))
+    ) {
+      errors.push({ field: 'status', message: 'Unsupported status' });
+    }
+
+    if (req.body?.password && String(req.body.password).length < 12) {
+      errors.push({
+        field: 'password',
+        message: 'Password must have at least 12 characters',
+      });
+    }
+
+    if (errors.length) fail(errors);
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const validateCategoryParam = (req, _res, next) => {
   try {
     const category = String(req.params.category || '').toLowerCase();

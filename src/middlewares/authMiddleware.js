@@ -35,3 +35,12 @@ export const requireAuth = async (req, _res, next) => {
     next(error.statusCode ? error : new ApiError(401, 'Authentication required'));
   }
 };
+
+export const requireRole = (...roles) => (req, _res, next) => {
+  if (!req.auth?.client || !roles.includes(req.auth.client.role)) {
+    next(new ApiError(403, 'Insufficient permissions'));
+    return;
+  }
+
+  next();
+};

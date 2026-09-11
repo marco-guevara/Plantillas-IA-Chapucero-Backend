@@ -181,6 +181,44 @@ Antes de conectar el frontend hay que mapearlos con los roles legacy actuales:
 
 Recomendacion de migracion: `admin -> admin`, `editor -> emaster`, `viewer -> client`, salvo que definamos permisos mas finos.
 
+## Administracion de clientes
+
+Solo rol `admin`.
+
+`GET /clients`
+
+Devuelve clientes sin hashes ni secretos:
+
+```json
+{
+  "clients": [
+    {
+      "id": "uuid",
+      "email": "cliente@example.com",
+      "name": "Cliente",
+      "role": "editor",
+      "status": "active",
+      "lastLoginAt": null
+    }
+  ]
+}
+```
+
+`POST /clients`
+
+```json
+{
+  "email": "cliente@example.com",
+  "password": "password-larga",
+  "name": "Cliente",
+  "role": "editor"
+}
+```
+
+`PATCH /clients/:id`
+
+Permite actualizar `name`, `role`, `status` y `password`.
+
 ## Produccion
 
 Para cookies cross-site entre frontend Vercel y backend Vercel:
