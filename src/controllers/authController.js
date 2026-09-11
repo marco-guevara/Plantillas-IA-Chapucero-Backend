@@ -30,12 +30,13 @@ export const login = asyncHandler(async (req, res) => {
   });
 
   setAuthCookies(res, result);
-  setCsrfCookie(res);
+  const csrfToken = setCsrfCookie(res);
 
   res.json({
     ok: true,
     client: result.client,
     accessToken: result.accessToken,
+    csrfToken,
   });
 });
 
@@ -51,12 +52,13 @@ export const refresh = asyncHandler(async (req, res) => {
   );
 
   setAuthCookies(res, result);
-  setCsrfCookie(res);
+  const csrfToken = setCsrfCookie(res);
 
   res.json({
     ok: true,
     client: result.client,
     accessToken: result.accessToken,
+    csrfToken,
   });
 });
 
