@@ -18,3 +18,19 @@ export const sequelize = new Sequelize(env.databaseUrl, {
 export const connectDatabase = async () => {
   await sequelize.authenticate();
 };
+
+export const checkDatabase = async () => {
+  try {
+    await sequelize.authenticate();
+    return {
+      ok: true,
+      required: env.databaseRequired,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      required: env.databaseRequired,
+      error: error.message,
+    };
+  }
+};

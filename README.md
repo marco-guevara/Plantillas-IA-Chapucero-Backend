@@ -37,6 +37,7 @@ Si Windows bloquea el modo watch con `spawn EPERM`, usar `npm start` para levant
 ## Endpoints iniciales
 
 - `GET /api/health`
+- `GET /api/health/ready`
 - `POST /api/auth/login`
 - `POST /api/auth/logout`
 - `POST /api/auth/refresh`
@@ -66,6 +67,10 @@ Para Supabase:
 4. Ejecutar `src/db/migrations/001-create-auth-tables.sql` en el SQL editor, o usar `npm run db:sync` en desarrollo.
 5. Ejecutar `src/db/migrations/002-create-lamina-domain-tables.sql`.
 6. Crear el primer cliente con `npm run db:create-admin`.
+
+## Despliegue
+
+El backend incluye `api/index.js` y `vercel.json` para ejecutarse como API en Vercel. Antes de desplegar front + back, revisar `docs/DEPLOYMENT_CHECKLIST.md` y confirmar que `GET /api/health/ready` responde `ok: true` en produccion.
 
 ## Modelo de datos
 
