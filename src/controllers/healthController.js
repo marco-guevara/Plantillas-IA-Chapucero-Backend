@@ -27,6 +27,11 @@ export const readiness = asyncHandler(async (_req, res) => {
       accessSecretConfigured: !env.jwtAccessSecret.includes('change-me'),
       refreshSecretConfigured: !env.jwtRefreshSecret.includes('change-me'),
     },
+    cookies: {
+      ok: env.nodeEnv !== 'production' || env.cookieSecure,
+      secure: env.cookieSecure,
+      trustProxy: env.trustProxy,
+    },
     integrations: {
       ok: Boolean(env.n8nUrl && env.hostingerUploadUrl),
       n8nUrlConfigured: Boolean(env.n8nUrl),
@@ -38,6 +43,7 @@ export const readiness = asyncHandler(async (_req, res) => {
     (!database.required || database.ok) &&
     checks.cors.ok &&
     checks.auth.ok &&
+    checks.cookies.ok &&
     checks.integrations.ok;
 
   res.status(ok ? 200 : 503).json({

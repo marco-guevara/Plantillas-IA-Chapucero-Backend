@@ -64,6 +64,41 @@ export const logoutClient = async (refreshToken) => {
   }
 };
 
+export const listClientSessions = async (clientId) => {
+  const sessions = await ClientSession.findAll({
+    where: {
+      clientId,
+      revokedAt: null,
+    },
+    order: [['createdAt', 'DESC']],
+  });
+
+  return sessions.map((session) => ({
+    id: session.id,
+    userAgent: session.userAgent,
+    ipAddress: session.ipAddress,
+    expiresAt: session.expiresAt,
+    createdAt: session.createdAt,
+  }));
+};
+
+export const revokeClientSession = async ({ clientId, sessionId }) => {
+  const [updated] = await ClientSession.update(
+    { revokedAt: new Date() },
+    {
+      where: {
+        id: sessionId,
+        clientId,
+        revokedAt: null,
+      },
+    },
+  );
+
+  if (!updated) {
+    throw new ApiError(404, 'Session not found');
+  }
+};
+
 export const refreshClientSession = async (refreshToken) => {
   if (!refreshToken) {
     throw new ApiError(401, 'Refresh token required');

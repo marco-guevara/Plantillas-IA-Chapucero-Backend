@@ -8,6 +8,7 @@
    - `src/db/migrations/002-create-lamina-domain-tables.sql`
 3. Configurar variables del backend en Vercel:
    - `NODE_ENV=production`
+   - `TRUST_PROXY=true`
    - `DATABASE_URL`
    - `DATABASE_SSL=true`
    - `DATABASE_REQUIRED=true`
@@ -34,7 +35,8 @@
    - `VITE_API_BASE_URL=https://tu-backend.vercel.app/api`
    - conservar variables legacy mientras n8n siga como respaldo.
 2. Confirmar que las llamadas usen cookies con `credentials: include` antes de activar auth real en produccion.
-3. Validar flujos principales:
+3. Adaptar auth siguiendo `docs/AUTH_FRONTEND_CONTRACT.md`.
+4. Validar flujos principales:
    - login
    - cola por categoria
    - guardado

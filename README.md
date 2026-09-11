@@ -23,6 +23,7 @@ Cuando el frontend pase a consumir esta API, `VITE_API_BASE_URL` debe apuntar a 
 - `N8N_URL`: host base de n8n, sin `/webhook` al final.
 - `HOSTINGER_UPLOAD_URL`: endpoint legacy de subida de assets.
 - `WEBHOOK_AUDIT_ENABLED`: guarda auditoria de llamadas n8n en PostgreSQL. En local puede quedar en `false`; en produccion conviene activarlo cuando la DB este lista.
+- `TRUST_PROXY`: usar `true` en Vercel/produccion para IP real y cookies seguras detras de proxy.
 
 ## Scripts
 
@@ -42,6 +43,8 @@ Si Windows bloquea el modo watch con `spawn EPERM`, usar `npm start` para levant
 - `POST /api/auth/logout`
 - `POST /api/auth/refresh`
 - `GET /api/auth/me`
+- `GET /api/auth/sessions`
+- `DELETE /api/auth/sessions/:id`
 - `GET /api/laminas/queue/:category`
 - `GET /api/laminas/history`
 - `GET /api/laminas/history/:id`
@@ -71,6 +74,8 @@ Para Supabase:
 ## Despliegue
 
 El backend incluye `api/index.js` y `vercel.json` para ejecutarse como API en Vercel. Antes de desplegar front + back, revisar `docs/DEPLOYMENT_CHECKLIST.md` y confirmar que `GET /api/health/ready` responde `ok: true` en produccion.
+
+Para conectar auth desde React, seguir `docs/AUTH_FRONTEND_CONTRACT.md`.
 
 ## Modelo de datos
 

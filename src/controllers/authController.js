@@ -1,7 +1,9 @@
 import {
   loginClient,
+  listClientSessions,
   logoutClient,
   refreshClientSession,
+  revokeClientSession,
 } from '../services/authService.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import {
@@ -52,4 +54,21 @@ export const me = asyncHandler(async (req, res) => {
     ok: true,
     client: req.auth.clientPublic,
   });
+});
+
+export const sessions = asyncHandler(async (req, res) => {
+  const items = await listClientSessions(req.auth.client.id);
+  res.json({
+    ok: true,
+    sessions: items,
+  });
+});
+
+export const revokeSession = asyncHandler(async (req, res) => {
+  await revokeClientSession({
+    clientId: req.auth.client.id,
+    sessionId: req.params.id,
+  });
+
+  res.json({ ok: true });
 });

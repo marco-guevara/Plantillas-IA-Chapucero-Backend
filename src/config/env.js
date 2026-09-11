@@ -16,6 +16,10 @@ const parseBoolean = (value, defaultValue = false) => {
 export const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: Number(process.env.PORT || 4000),
+  trustProxy: parseBoolean(
+    process.env.TRUST_PROXY,
+    process.env.NODE_ENV === 'production',
+  ),
   databaseUrl:
     process.env.DATABASE_URL ||
     'postgresql://postgres:postgres@localhost:5432/laminas_ia',

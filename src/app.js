@@ -13,6 +13,7 @@ export const createApp = () => {
   const app = express();
 
   app.disable('x-powered-by');
+  app.set('trust proxy', env.trustProxy ? 1 : false);
   app.use(helmet());
   app.use(corsMiddleware);
   app.use(express.json({ limit: '15mb' }));
