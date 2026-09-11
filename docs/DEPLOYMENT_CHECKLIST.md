@@ -3,10 +3,9 @@
 ## Backend
 
 1. Crear proyecto Supabase y copiar `DATABASE_URL`.
-2. Ejecutar las migraciones SQL en este orden:
-   - `src/db/migrations/001-create-auth-tables.sql`
-   - `src/db/migrations/002-create-lamina-domain-tables.sql`
-3. Configurar variables del backend en Vercel:
+2. Ejecutar migraciones con `npm run db:migrate`.
+3. Confirmar estado con `npm run db:status`.
+4. Configurar variables del backend en Vercel:
    - `NODE_ENV=production`
    - `TRUST_PROXY=true`
    - `DATABASE_URL`
@@ -22,12 +21,13 @@
    - `JWT_REFRESH_SECRET`
    - `N8N_URL`
    - `HOSTINGER_UPLOAD_URL`
-4. Crear primer cliente admin:
+5. Crear primer cliente admin:
    - local contra Supabase: `npm run db:create-admin`
    - o una seed temporal controlada, nunca desde endpoint publico.
-5. Validar:
+6. Validar:
    - `GET /api/health`
    - `GET /api/health/ready`
+   - `checks.database.migrations.tableReady=true`
 
 ## Frontend
 

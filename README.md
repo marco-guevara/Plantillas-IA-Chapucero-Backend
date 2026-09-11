@@ -30,6 +30,8 @@ Cuando el frontend pase a consumir esta API, `VITE_API_BASE_URL` debe apuntar a 
 - `npm run dev`: API con `node --watch`.
 - `npm start`: API en modo Node.
 - `npm run check`: validacion rapida de sintaxis.
+- `npm run db:migrate`: ejecuta migraciones SQL pendientes con tabla `schema_migrations`.
+- `npm run db:status`: muestra migraciones aplicadas y pendientes.
 - `npm run db:sync`: sincroniza modelos Sequelize sin `alter`.
 - `npm run db:create-admin`: crea o actualiza el primer cliente admin desde `.env`.
 
@@ -72,9 +74,8 @@ Para Supabase:
 1. Crear el proyecto PostgreSQL.
 2. Copiar la cadena de conexion en `DATABASE_URL`.
 3. Usar `DATABASE_SSL=true`.
-4. Ejecutar `src/db/migrations/001-create-auth-tables.sql` en el SQL editor, o usar `npm run db:sync` en desarrollo.
-5. Ejecutar `src/db/migrations/002-create-lamina-domain-tables.sql`.
-6. Crear el primer cliente con `npm run db:create-admin`.
+4. Ejecutar migraciones con `npm run db:migrate`.
+5. Crear el primer cliente con `npm run db:create-admin`.
 
 ## Despliegue
 

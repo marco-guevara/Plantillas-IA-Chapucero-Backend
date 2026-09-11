@@ -1,5 +1,6 @@
 import { env } from '../config/env.js';
 import { checkDatabase } from '../config/database.js';
+import { getMigrationStatus } from '../db/migrationService.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 
 export const health = asyncHandler(async (_req, res) => {
@@ -13,8 +14,17 @@ export const health = asyncHandler(async (_req, res) => {
 
 export const readiness = asyncHandler(async (_req, res) => {
   const database = await checkDatabase();
+  const migrations = database.ok
+    ? await getMigrationStatus()
+    : {
+        ok: false,
+        tableReady: false,
+        applied: [],
+        pending: [],
+      };
   const checks = {
     database,
+    migrations,
     cors: {
       ok: env.corsOrigins.length > 0,
       origins: env.corsOrigins,
@@ -42,6 +52,7 @@ export const readiness = asyncHandler(async (_req, res) => {
 
   const ok =
     (!database.required || database.ok) &&
+    (!database.required || migrations.ok) &&
     checks.cors.ok &&
     checks.auth.ok &&
     checks.cookies.ok &&
