@@ -1,4 +1,4 @@
-import { Client } from '../models/index.js';
+import { Client, ClientSession } from '../models/index.js';
 import { ApiError } from '../utils/apiError.js';
 import { hashPassword } from './passwordService.js';
 
@@ -54,6 +54,42 @@ export const createClient = async ({ email, password, name, role = 'editor' }) =
   return publicClient(client);
 };
 
+const countActiveAdmins = () =>
+  Client.count({
+    where: {
+      role: 'admin',
+      status: 'active',
+    },
+  });
+
+const assertCanChangeAdminAccess = async ({ client, role, status }) => {
+  const removesAdminRole = role !== undefined && role !== 'admin';
+  const disablesClient = status === 'disabled';
+
+  if (client.role !== 'admin' || (!removesAdminRole && !disablesClient)) {
+    return;
+  }
+
+  const activeAdmins = await countActiveAdmins();
+  if (activeAdmins <= 1) {
+    throw new ApiError(400, 'At least one active admin is required');
+  }
+};
+
+const revokeClientSessions = async (clientId) => {
+  const [revokedCount] = await ClientSession.update(
+    { revokedAt: new Date() },
+    {
+      where: {
+        clientId,
+        revokedAt: null,
+      },
+    },
+  );
+
+  return revokedCount;
+};
+
 export const updateClient = async ({ id, name, role, status, password }) => {
   const client = await Client.findByPk(id);
 
@@ -61,7 +97,10 @@ export const updateClient = async ({ id, name, role, status, password }) => {
     throw new ApiError(404, 'Client not found');
   }
 
+  await assertCanChangeAdminAccess({ client, role, status });
+
   const updates = {};
+  const shouldRevokeSessions = Boolean(password) || status === 'disabled';
 
   if (name !== undefined) updates.name = String(name).trim();
   if (role !== undefined) updates.role = role;
@@ -69,5 +108,13 @@ export const updateClient = async ({ id, name, role, status, password }) => {
   if (password !== undefined) updates.passwordHash = await hashPassword(password);
 
   await client.update(updates);
-  return publicClient(client);
+
+  const revokedSessions = shouldRevokeSessions
+    ? await revokeClientSessions(client.id)
+    : 0;
+
+  return {
+    client: publicClient(client),
+    revokedSessions,
+  };
 };

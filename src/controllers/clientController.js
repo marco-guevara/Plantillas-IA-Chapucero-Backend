@@ -24,10 +24,10 @@ export const update = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Admins cannot remove their own access');
   }
 
-  const client = await updateClient({
+  const result = await updateClient({
     id: req.params.id,
     ...req.body,
   });
 
-  res.json({ client });
+  res.json(result);
 });

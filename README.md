@@ -72,6 +72,8 @@ La API mantiene compatibilidad con n8n y, cuando PostgreSQL esta disponible, gua
 
 Los endpoints validan parametros y cuerpo JSON antes de llamar a n8n, pero mantienen flexibles los campos internos de los payloads legacy documentados.
 
+La administracion de clientes revoca sesiones al resetear password o desactivar cuentas, y protege que siempre exista al menos un admin activo.
+
 ## Supabase
 
 Para Supabase:

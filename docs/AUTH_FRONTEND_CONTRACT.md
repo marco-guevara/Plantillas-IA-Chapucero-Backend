@@ -219,6 +219,24 @@ Devuelve clientes sin hashes ni secretos:
 
 Permite actualizar `name`, `role`, `status` y `password`.
 
+Respuesta:
+
+```json
+{
+  "client": {
+    "id": "uuid",
+    "email": "cliente@example.com",
+    "name": "Cliente",
+    "role": "editor",
+    "status": "active",
+    "lastLoginAt": null
+  },
+  "revokedSessions": 1
+}
+```
+
+Si se cambia `password` o `status=disabled`, el backend revoca las sesiones activas de ese cliente. El backend tambien impide desactivar/degradar al ultimo admin activo.
+
 ## Produccion
 
 Para cookies cross-site entre frontend Vercel y backend Vercel:
