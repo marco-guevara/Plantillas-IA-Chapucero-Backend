@@ -63,6 +63,8 @@ En produccion, las llamadas `POST`, `PATCH` y `DELETE` deben enviar `x-csrf-toke
 
 La API mantiene compatibilidad con n8n y, cuando PostgreSQL esta disponible, guarda historico local de guardados, generaciones, assets subidos y publicaciones. Esa persistencia es best effort: si la DB local aun no esta levantada, no debe bloquear la llamada legacy.
 
+Los endpoints validan parametros y cuerpo JSON antes de llamar a n8n, pero mantienen flexibles los campos internos de los payloads legacy documentados.
+
 ## Supabase
 
 Para Supabase:
