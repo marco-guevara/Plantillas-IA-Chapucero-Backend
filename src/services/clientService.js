@@ -8,6 +8,7 @@ export const publicClient = (client) => ({
   name: client.name,
   role: client.role,
   status: client.status,
+  mode: client.mode,
   lastLoginAt: client.lastLoginAt,
 });
 
@@ -35,7 +36,13 @@ export const listClients = async () => {
   return clients.map(publicClient);
 };
 
-export const createClient = async ({ email, password, name, role = 'editor' }) => {
+export const createClient = async ({
+  email,
+  password,
+  name,
+  role = 'editor',
+  mode,
+}) => {
   const normalizedEmail = String(email || '').trim().toLowerCase();
   const existing = await Client.findOne({ where: { email: normalizedEmail } });
 
@@ -49,6 +56,7 @@ export const createClient = async ({ email, password, name, role = 'editor' }) =
     name: String(name || '').trim(),
     role,
     status: 'active',
+    ...(mode ? { mode } : {}),
   });
 
   return publicClient(client);
@@ -90,7 +98,14 @@ const revokeClientSessions = async (clientId) => {
   return revokedCount;
 };
 
-export const updateClient = async ({ id, name, role, status, password }) => {
+export const updateClient = async ({
+  id,
+  name,
+  role,
+  status,
+  password,
+  mode,
+}) => {
   const client = await Client.findByPk(id);
 
   if (!client) {
@@ -105,6 +120,7 @@ export const updateClient = async ({ id, name, role, status, password }) => {
   if (name !== undefined) updates.name = String(name).trim();
   if (role !== undefined) updates.role = role;
   if (status !== undefined) updates.status = status;
+  if (mode !== undefined) updates.mode = mode;
   if (password !== undefined) updates.passwordHash = await hashPassword(password);
 
   await client.update(updates);

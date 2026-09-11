@@ -1,0 +1,31 @@
+import { env } from '../config/env.js';
+
+const isConfigured = () => Boolean(env.unsplashAccessKey);
+
+export const searchUnsplashImages = async (query) => {
+  if (!isConfigured()) return [];
+
+  const url = new URL('https://api.unsplash.com/search/photos');
+  url.searchParams.set('query', query);
+  url.searchParams.set('per_page', '10');
+
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Client-ID ${env.unsplashAccessKey}`,
+    },
+  });
+
+  if (!response.ok) {
+    return [];
+  }
+
+  const data = await response.json();
+  const results = Array.isArray(data.results) ? data.results : [];
+
+  return results
+    .map((item) => ({
+      original: item.urls?.regular || '',
+      thumbnail: item.urls?.thumb || item.urls?.small || '',
+    }))
+    .filter((image) => image.original);
+};

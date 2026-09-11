@@ -37,6 +37,11 @@ export const initClientModel = (sequelize) => {
         allowNull: false,
         defaultValue: 'active',
       },
+      mode: {
+        type: DataTypes.ENUM('n8n', 'standalone'),
+        allowNull: false,
+        defaultValue: 'standalone',
+      },
       lastLoginAt: {
         type: DataTypes.DATE,
         allowNull: true,

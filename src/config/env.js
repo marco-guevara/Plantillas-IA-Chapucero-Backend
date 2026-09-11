@@ -58,6 +58,11 @@ export const env = {
   hostingerUploadUrl:
     process.env.HOSTINGER_UPLOAD_URL ||
     'https://laizquierdanoticia.com/guardar_imagen_lamina.php',
+  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
+  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
+  serperApiKey: process.env.SERPER_API_KEY || '',
+  unsplashAccessKey: process.env.UNSPLASH_ACCESS_KEY || '',
   webhookTimeoutMs: Math.max(
     1_000,
     parseInteger(process.env.WEBHOOK_TIMEOUT_MS, 25_000),

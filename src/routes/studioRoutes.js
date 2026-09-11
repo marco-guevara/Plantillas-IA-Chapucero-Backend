@@ -1,0 +1,39 @@
+import { Router } from 'express';
+
+import {
+  generate,
+  publish,
+  saveLamina,
+  searchImages,
+  uploadAsset,
+} from '../controllers/studioController.js';
+import { requireAuth } from '../middlewares/authMiddleware.js';
+import { requireStandaloneMode } from '../middlewares/modeGuardMiddleware.js';
+import { webhookRateLimit } from '../middlewares/rateLimitMiddleware.js';
+import {
+  requireBodyObject,
+  validateFormatParam,
+  validateNetworkParam,
+} from '../middlewares/requestValidationMiddleware.js';
+
+export const studioRoutes = Router();
+
+studioRoutes.use(requireAuth);
+studioRoutes.use(requireStandaloneMode);
+studioRoutes.use(webhookRateLimit);
+
+studioRoutes.post('/laminas', requireBodyObject, saveLamina);
+studioRoutes.post(
+  '/laminas/generate/:format',
+  validateFormatParam,
+  requireBodyObject,
+  generate,
+);
+studioRoutes.post('/assets/upload', requireBodyObject, uploadAsset);
+studioRoutes.post('/images/search', requireBodyObject, searchImages);
+studioRoutes.post(
+  '/publishing/:network',
+  validateNetworkParam,
+  requireBodyObject,
+  publish,
+);

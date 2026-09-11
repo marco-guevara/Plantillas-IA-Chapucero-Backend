@@ -68,6 +68,13 @@ export const validateCreateClientBody = (req, _res, next) => {
       errors.push({ field: 'role', message: 'Unsupported role' });
     }
 
+    if (
+      req.body?.mode &&
+      !['n8n', 'standalone'].includes(String(req.body.mode))
+    ) {
+      errors.push({ field: 'mode', message: 'Unsupported mode' });
+    }
+
     if (errors.length) fail(errors);
 
     next();
@@ -92,6 +99,13 @@ export const validateUpdateClientBody = (req, _res, next) => {
       !['active', 'disabled'].includes(String(req.body.status))
     ) {
       errors.push({ field: 'status', message: 'Unsupported status' });
+    }
+
+    if (
+      req.body?.mode &&
+      !['n8n', 'standalone'].includes(String(req.body.mode))
+    ) {
+      errors.push({ field: 'mode', message: 'Unsupported mode' });
     }
 
     if (req.body?.password && String(req.body.password).length < 12) {
