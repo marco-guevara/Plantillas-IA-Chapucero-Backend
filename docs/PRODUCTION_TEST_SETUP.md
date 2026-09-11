@@ -13,7 +13,7 @@ Crear un proyecto PostgreSQL en Supabase y copiar la connection string.
 En el backend local, configurar temporalmente `.env` o variables de terminal con:
 
 ```env
-DATABASE_URL=postgresql://postgres:PASSWORD@HOST:5432/postgres
+DATABASE_URL=postgresql://postgres.nffydeuscsyzhqpxhafu:[YOUR-PASSWORD]@aws-1-eu-west-1.pooler.supabase.com:5432/postgres
 DATABASE_SSL=true
 DATABASE_REQUIRED=true
 ADMIN_EMAIL=admin@example.com
@@ -49,12 +49,12 @@ Environment variables:
 
 Copiar las variables de `.env.render.example` en Render y sustituir:
 
-- `DATABASE_URL`
+- `DATABASE_URL`, sustituyendo `[YOUR-PASSWORD]`
 - `JWT_ACCESS_SECRET`
 - `JWT_REFRESH_SECRET`
 - `ADMIN_EMAIL`
 - `ADMIN_PASSWORD`
-- `CORS_ORIGINS` si Vercel genera otro dominio
+- `CORS_ORIGINS` si Vercel genera otro dominio. Para el entorno actual usar `https://plantillas-ia-chapucero-test.vercel.app`
 
 Validar:
 
