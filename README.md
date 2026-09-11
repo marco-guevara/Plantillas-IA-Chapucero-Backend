@@ -22,6 +22,8 @@ Cuando el frontend pase a consumir esta API, `VITE_API_BASE_URL` debe apuntar a 
 - `JWT_ACCESS_SECRET` y `JWT_REFRESH_SECRET`: secretos largos y distintos.
 - `N8N_URL`: host base de n8n, sin `/webhook` al final.
 - `HOSTINGER_UPLOAD_URL`: endpoint legacy de subida de assets.
+- `WEBHOOK_TIMEOUT_MS`: maximo tiempo de espera por llamada n8n/Hostinger.
+- `WEBHOOK_RETRY_ATTEMPTS`: reintentos para timeouts, errores de red y respuestas 5xx.
 - `WEBHOOK_AUDIT_ENABLED`: guarda auditoria de llamadas n8n en PostgreSQL. En local puede quedar en `false`; en produccion conviene activarlo cuando la DB este lista.
 - `TRUST_PROXY`: usar `true` en Vercel/produccion para IP real y cookies seguras detras de proxy.
 

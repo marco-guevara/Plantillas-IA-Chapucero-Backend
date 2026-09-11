@@ -25,13 +25,21 @@ const parseJsonResponse = async (response) => {
   }
 };
 
-const requestJson = async ({ webhookName, url, method = 'GET', payload }) => {
-  const startedAt = Date.now();
+const shouldRetry = ({ response }) => response?.status >= 500;
 
-  let response;
+const auditPayload = (payload, attempt) => ({
+  ...(payload && typeof payload === 'object' ? payload : {}),
+  _attempt: attempt,
+});
+
+const fetchWithTimeout = async ({ url, method, payload }) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), env.webhookTimeoutMs);
+
   try {
-    response = await fetch(url, {
+    return await fetch(url, {
       method,
+      signal: controller.signal,
       headers:
         method === 'POST'
           ? {
@@ -40,21 +48,50 @@ const requestJson = async ({ webhookName, url, method = 'GET', payload }) => {
           : undefined,
       body: method === 'POST' ? JSON.stringify(payload) : undefined,
     });
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
+const requestOnce = async ({
+  webhookName,
+  url,
+  method,
+  payload,
+  attempt,
+}) => {
+  const startedAt = Date.now();
+
+  let response;
+  try {
+    response = await fetchWithTimeout({
+      url,
+      method,
+      payload,
+    });
   } catch (error) {
+    const isTimeout = error.name === 'AbortError';
     await recordWebhookEvent({
       webhookName,
       endpoint: url,
       method,
       status: 'error',
       durationMs: Date.now() - startedAt,
-      requestPayload: payload,
-      errorMessage: error.message,
+      requestPayload: auditPayload(payload, attempt),
+      errorMessage: isTimeout
+        ? `Webhook timeout after ${env.webhookTimeoutMs}ms`
+        : error.message,
     });
 
-    throw new ApiError(502, 'n8n webhook is not reachable', {
+    const apiError = new ApiError(isTimeout ? 504 : 502, 'n8n webhook failed', {
       webhookName,
-      message: error.message,
+      attempt,
+      message: isTimeout
+        ? `Timeout after ${env.webhookTimeoutMs}ms`
+        : error.message,
     });
+    apiError.retryable = true;
+    throw apiError;
   }
 
   const data = await parseJsonResponse(response);
@@ -67,16 +104,44 @@ const requestJson = async ({ webhookName, url, method = 'GET', payload }) => {
     status: response.ok ? 'success' : 'error',
     statusCode: response.status,
     durationMs,
-    requestPayload: payload,
+    requestPayload: auditPayload(payload, attempt),
     responsePayload: data,
     errorMessage: response.ok ? undefined : 'n8n webhook request failed',
   });
 
   if (!response.ok) {
-    throw new ApiError(response.status, 'n8n webhook request failed', data);
+    const apiError = new ApiError(
+      response.status,
+      'n8n webhook request failed',
+      data,
+    );
+    apiError.retryable = shouldRetry({ response });
+    throw apiError;
   }
 
   return data;
+};
+
+const requestJson = async ({ webhookName, url, method = 'GET', payload }) => {
+  const attempts = env.webhookRetryAttempts + 1;
+  let lastError;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await requestOnce({
+        webhookName,
+        url,
+        method,
+        payload,
+        attempt,
+      });
+    } catch (error) {
+      lastError = error;
+      if (!error.retryable || attempt >= attempts) break;
+    }
+  }
+
+  throw lastError;
 };
 
 const postJson = async (webhookName, url, payload) =>
@@ -176,7 +241,11 @@ export const downloadLaminas = async (payload) => {
 };
 
 export const uploadAsset = async (payload) => {
-  const data = await postJson('hostinger-upload', env.hostingerUploadUrl, payload);
+  const data = await postJson(
+    'hostinger-upload',
+    env.hostingerUploadUrl,
+    payload,
+  );
   return {
     ok: data.ok ?? true,
     url: data.url || data.imageUrl || data.path || '',

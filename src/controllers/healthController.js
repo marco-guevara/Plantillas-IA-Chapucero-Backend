@@ -47,6 +47,8 @@ export const readiness = asyncHandler(async (_req, res) => {
       ok: Boolean(env.n8nUrl && env.hostingerUploadUrl),
       n8nUrlConfigured: Boolean(env.n8nUrl),
       hostingerUploadConfigured: Boolean(env.hostingerUploadUrl),
+      webhookTimeoutMs: env.webhookTimeoutMs,
+      webhookRetryAttempts: env.webhookRetryAttempts,
     },
   };
 

@@ -21,6 +21,8 @@
    - `JWT_REFRESH_SECRET`
    - `N8N_URL`
    - `HOSTINGER_UPLOAD_URL`
+   - `WEBHOOK_TIMEOUT_MS=25000`
+   - `WEBHOOK_RETRY_ATTEMPTS=1`
 5. Crear primer cliente admin:
    - local contra Supabase: `npm run db:create-admin`
    - o una seed temporal controlada, nunca desde endpoint publico.

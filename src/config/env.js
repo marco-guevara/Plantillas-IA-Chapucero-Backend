@@ -13,6 +13,11 @@ const parseBoolean = (value, defaultValue = false) => {
   return ['1', 'true', 'yes', 'on'].includes(String(value).toLowerCase());
 };
 
+const parseInteger = (value, defaultValue) => {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) ? parsed : defaultValue;
+};
+
 export const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: Number(process.env.PORT || 4000),
@@ -53,6 +58,14 @@ export const env = {
   hostingerUploadUrl:
     process.env.HOSTINGER_UPLOAD_URL ||
     'https://laizquierdanoticia.com/guardar_imagen_lamina.php',
+  webhookTimeoutMs: Math.max(
+    1_000,
+    parseInteger(process.env.WEBHOOK_TIMEOUT_MS, 25_000),
+  ),
+  webhookRetryAttempts: Math.max(
+    0,
+    Math.min(3, parseInteger(process.env.WEBHOOK_RETRY_ATTEMPTS, 1)),
+  ),
 };
 
 export const isProduction = env.nodeEnv === 'production';
