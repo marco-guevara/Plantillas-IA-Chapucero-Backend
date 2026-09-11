@@ -22,6 +22,7 @@ Cuando el frontend pase a consumir esta API, `VITE_API_BASE_URL` debe apuntar a 
 - `JWT_ACCESS_SECRET` y `JWT_REFRESH_SECRET`: secretos largos y distintos.
 - `N8N_URL`: host base de n8n, sin `/webhook` al final.
 - `HOSTINGER_UPLOAD_URL`: endpoint legacy de subida de assets.
+- `WEBHOOK_AUDIT_ENABLED`: guarda auditoria de llamadas n8n en PostgreSQL. En local puede quedar en `false`; en produccion conviene activarlo cuando la DB este lista.
 
 ## Scripts
 
@@ -59,7 +60,17 @@ Para Supabase:
 2. Copiar la cadena de conexion en `DATABASE_URL`.
 3. Usar `DATABASE_SSL=true`.
 4. Ejecutar `src/db/migrations/001-create-auth-tables.sql` en el SQL editor, o usar `npm run db:sync` en desarrollo.
-5. Crear el primer cliente con `npm run db:create-admin`.
+5. Ejecutar `src/db/migrations/002-create-lamina-domain-tables.sql`.
+6. Crear el primer cliente con `npm run db:create-admin`.
+
+## Modelo de datos
+
+- `clients`: credenciales y permisos de clientes.
+- `client_sessions`: refresh tokens revocables para cookies/JWT.
+- `laminas`: historico principal de laminas, categoria, URLs generadas y payload estable.
+- `lamina_assets`: imagen principal, composiciones, subidas y variantes.
+- `publish_jobs`: intentos de publicacion por red social.
+- `webhook_events`: auditoria de llamadas hacia n8n/Hostinger con payloads saneados.
 
 ## Contratos
 

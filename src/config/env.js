@@ -25,6 +25,10 @@ export const env = {
     process.env.NODE_ENV === 'production',
   ),
   dbLogging: parseBoolean(process.env.DB_LOGGING),
+  webhookAuditEnabled: parseBoolean(
+    process.env.WEBHOOK_AUDIT_ENABLED,
+    process.env.NODE_ENV === 'production',
+  ),
   corsOrigins: parseList(process.env.CORS_ORIGINS || 'http://localhost:5173'),
   cookieDomain: process.env.COOKIE_DOMAIN || undefined,
   cookieSecure: parseBoolean(
