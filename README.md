@@ -26,6 +26,7 @@ Cuando el frontend pase a consumir esta API, `VITE_API_BASE_URL` debe apuntar a 
 - `WEBHOOK_RETRY_ATTEMPTS`: reintentos para timeouts, errores de red y respuestas 5xx.
 - `WEBHOOK_AUDIT_ENABLED`: guarda auditoria de llamadas n8n en PostgreSQL. En local puede quedar en `false`; en produccion conviene activarlo cuando la DB este lista.
 - `TRUST_PROXY`: usar `true` en Vercel/produccion para IP real y cookies seguras detras de proxy.
+- `RATE_LIMIT_*`: limites por IP para trafico global, auth y llamadas workflow.
 
 ## Scripts
 

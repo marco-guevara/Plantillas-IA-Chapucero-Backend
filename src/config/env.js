@@ -66,6 +66,22 @@ export const env = {
     0,
     Math.min(3, parseInteger(process.env.WEBHOOK_RETRY_ATTEMPTS, 1)),
   ),
+  rateLimitWindowMs: Math.max(
+    60_000,
+    parseInteger(process.env.RATE_LIMIT_WINDOW_MS, 900_000),
+  ),
+  rateLimitGlobalMax: Math.max(
+    60,
+    parseInteger(process.env.RATE_LIMIT_GLOBAL_MAX, 600),
+  ),
+  rateLimitAuthMax: Math.max(
+    5,
+    parseInteger(process.env.RATE_LIMIT_AUTH_MAX, 20),
+  ),
+  rateLimitWebhookMax: Math.max(
+    10,
+    parseInteger(process.env.RATE_LIMIT_WEBHOOK_MAX, 120),
+  ),
 };
 
 export const isProduction = env.nodeEnv === 'production';

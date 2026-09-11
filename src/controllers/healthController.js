@@ -50,6 +50,13 @@ export const readiness = asyncHandler(async (_req, res) => {
       webhookTimeoutMs: env.webhookTimeoutMs,
       webhookRetryAttempts: env.webhookRetryAttempts,
     },
+    rateLimits: {
+      ok: true,
+      windowMs: env.rateLimitWindowMs,
+      globalMax: env.rateLimitGlobalMax,
+      authMax: env.rateLimitAuthMax,
+      webhookMax: env.rateLimitWebhookMax,
+    },
   };
 
   const ok =

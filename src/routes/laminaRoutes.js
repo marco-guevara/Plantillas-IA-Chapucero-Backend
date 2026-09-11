@@ -12,6 +12,7 @@ import {
   listHistory,
 } from '../controllers/laminaHistoryController.js';
 import { apiAuthMode } from '../middlewares/apiAuthModeMiddleware.js';
+import { webhookRateLimit } from '../middlewares/rateLimitMiddleware.js';
 import {
   requireBodyObject,
   validateCategoryParam,
@@ -22,6 +23,7 @@ import {
 export const laminaRoutes = Router();
 
 laminaRoutes.use(apiAuthMode);
+laminaRoutes.use(webhookRateLimit);
 laminaRoutes.get('/history', listHistory);
 laminaRoutes.get('/history/:id', validateUuidParam('id'), getHistoryDetail);
 laminaRoutes.get('/queue/:category', validateCategoryParam, getQueue);

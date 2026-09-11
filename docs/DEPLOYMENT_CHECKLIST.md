@@ -23,6 +23,10 @@
    - `HOSTINGER_UPLOAD_URL`
    - `WEBHOOK_TIMEOUT_MS=25000`
    - `WEBHOOK_RETRY_ATTEMPTS=1`
+   - `RATE_LIMIT_WINDOW_MS=900000`
+   - `RATE_LIMIT_GLOBAL_MAX=600`
+   - `RATE_LIMIT_AUTH_MAX=20`
+   - `RATE_LIMIT_WEBHOOK_MAX=120`
 5. Crear primer cliente admin:
    - local contra Supabase: `npm run db:create-admin`
    - o una seed temporal controlada, nunca desde endpoint publico.
