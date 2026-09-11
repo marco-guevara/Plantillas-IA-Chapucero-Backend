@@ -28,9 +28,10 @@ export const readiness = asyncHandler(async (_req, res) => {
       refreshSecretConfigured: !env.jwtRefreshSecret.includes('change-me'),
     },
     cookies: {
-      ok: env.nodeEnv !== 'production' || env.cookieSecure,
+      ok: env.nodeEnv !== 'production' || (env.cookieSecure && env.csrfRequired),
       secure: env.cookieSecure,
       trustProxy: env.trustProxy,
+      csrfRequired: env.csrfRequired,
     },
     integrations: {
       ok: Boolean(env.n8nUrl && env.hostingerUploadUrl),

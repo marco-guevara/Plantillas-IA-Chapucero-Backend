@@ -39,6 +39,7 @@ Si Windows bloquea el modo watch con `spawn EPERM`, usar `npm start` para levant
 
 - `GET /api/health`
 - `GET /api/health/ready`
+- `GET /api/auth/csrf`
 - `POST /api/auth/login`
 - `POST /api/auth/logout`
 - `POST /api/auth/refresh`
@@ -57,6 +58,8 @@ Si Windows bloquea el modo watch con `spawn EPERM`, usar `npm start` para levant
 - `POST /api/publishing/:network`
 
 Las rutas de negocio pasan por `REQUIRE_AUTH_FOR_API=true` por defecto. El frontend debera usar cookies con `credentials: include` cuando activemos la conexion real contra esta API.
+
+En produccion, las llamadas `POST`, `PATCH` y `DELETE` deben enviar `x-csrf-token`; ver `docs/AUTH_FRONTEND_CONTRACT.md`.
 
 La API mantiene compatibilidad con n8n y, cuando PostgreSQL esta disponible, guarda historico local de guardados, generaciones, assets subidos y publicaciones. Esa persistencia es best effort: si la DB local aun no esta levantada, no debe bloquear la llamada legacy.
 

@@ -39,6 +39,10 @@ export const env = {
     process.env.COOKIE_SECURE,
     process.env.NODE_ENV === 'production',
   ),
+  csrfRequired: parseBoolean(
+    process.env.CSRF_REQUIRED,
+    process.env.NODE_ENV === 'production',
+  ),
   requireAuthForApi: parseBoolean(process.env.REQUIRE_AUTH_FOR_API, true),
   jwtAccessSecret: process.env.JWT_ACCESS_SECRET || 'dev-access-secret-change-me',
   jwtRefreshSecret:

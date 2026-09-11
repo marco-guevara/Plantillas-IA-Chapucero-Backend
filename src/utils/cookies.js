@@ -11,6 +11,12 @@ const baseCookieOptions = {
 export const authCookieNames = {
   access: 'laminas_access_token',
   refresh: 'laminas_refresh_token',
+  csrf: 'laminas_csrf_token',
+};
+
+export const csrfCookieOptions = {
+  ...baseCookieOptions,
+  httpOnly: false,
 };
 
 export const setAuthCookies = (res, { accessToken, refreshToken }) => {
@@ -27,4 +33,5 @@ export const setAuthCookies = (res, { accessToken, refreshToken }) => {
 export const clearAuthCookies = (res) => {
   res.clearCookie(authCookieNames.access, baseCookieOptions);
   res.clearCookie(authCookieNames.refresh, baseCookieOptions);
+  res.clearCookie(authCookieNames.csrf, csrfCookieOptions);
 };

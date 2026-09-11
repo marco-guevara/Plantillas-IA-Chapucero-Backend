@@ -11,6 +11,15 @@ import {
   clearAuthCookies,
   setAuthCookies,
 } from '../utils/cookies.js';
+import { setCsrfCookie } from '../services/csrfService.js';
+
+export const csrf = asyncHandler(async (_req, res) => {
+  const token = setCsrfCookie(res);
+  res.json({
+    ok: true,
+    csrfToken: token,
+  });
+});
 
 export const login = asyncHandler(async (req, res) => {
   const result = await loginClient({
@@ -21,6 +30,7 @@ export const login = asyncHandler(async (req, res) => {
   });
 
   setAuthCookies(res, result);
+  setCsrfCookie(res);
 
   res.json({
     ok: true,
@@ -41,6 +51,7 @@ export const refresh = asyncHandler(async (req, res) => {
   );
 
   setAuthCookies(res, result);
+  setCsrfCookie(res);
 
   res.json({
     ok: true,

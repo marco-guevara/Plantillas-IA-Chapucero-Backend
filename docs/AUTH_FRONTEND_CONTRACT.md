@@ -24,6 +24,37 @@ fetch(url, {
 })
 ```
 
+## CSRF
+
+Antes de cualquier `POST`, `PATCH` o `DELETE` cuando `CSRF_REQUIRED=true`, el frontend debe pedir un token:
+
+`GET /auth/csrf`
+
+Respuesta:
+
+```json
+{
+  "ok": true,
+  "csrfToken": "token"
+}
+```
+
+El backend tambien setea la cookie `laminas_csrf_token`. En cada llamada mutante, enviar el token en header:
+
+```js
+fetch(url, {
+  method: 'POST',
+  credentials: 'include',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-csrf-token': csrfToken,
+  },
+  body: JSON.stringify(payload),
+})
+```
+
+En desarrollo podemos usar `CSRF_REQUIRED=false` para acelerar pruebas locales. En produccion debe ser `true`.
+
 ## Login
 
 `POST /auth/login`
@@ -58,6 +89,10 @@ Cookies httpOnly seteadas por backend:
 
 - `laminas_access_token`
 - `laminas_refresh_token`
+
+Cookie legible por frontend para CSRF:
+
+- `laminas_csrf_token`
 
 El frontend puede guardar `client` en estado React, pero no debe guardar el refresh token.
 

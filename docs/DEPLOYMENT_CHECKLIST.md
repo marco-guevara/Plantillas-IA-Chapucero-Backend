@@ -15,6 +15,7 @@
    - `WEBHOOK_AUDIT_ENABLED=true`
    - `CORS_ORIGINS=https://tu-frontend.vercel.app`
    - `COOKIE_SECURE=true`
+   - `CSRF_REQUIRED=true`
    - `COOKIE_DOMAIN=` si front y back no comparten dominio padre
    - `REQUIRE_AUTH_FOR_API=true`
    - `JWT_ACCESS_SECRET`
@@ -34,9 +35,10 @@
    - `VITE_DATA_SOURCE=backend`
    - `VITE_API_BASE_URL=https://tu-backend.vercel.app/api`
    - conservar variables legacy mientras n8n siga como respaldo.
-2. Confirmar que las llamadas usen cookies con `credentials: include` antes de activar auth real en produccion.
-3. Adaptar auth siguiendo `docs/AUTH_FRONTEND_CONTRACT.md`.
-4. Validar flujos principales:
+2. Confirmar que las llamadas usen cookies con `credentials: include`.
+3. Pedir `GET /auth/csrf` y enviar `x-csrf-token` en llamadas mutantes.
+4. Adaptar auth siguiendo `docs/AUTH_FRONTEND_CONTRACT.md`.
+5. Validar flujos principales:
    - login
    - cola por categoria
    - guardado
