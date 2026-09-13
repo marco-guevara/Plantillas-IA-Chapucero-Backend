@@ -199,7 +199,7 @@ export const generateStudioDraft = async ({ clientId, prompt }) => {
     // (src/domain/editorConfig.js) - the config-merge replaces this whole
     // object, it does not deep-merge per field, so every field must be
     // supplied or the sliders that read them render "NaN".
-    align: 'center',
+    align: 'left',
     color: '#ffffff',
     lineHeight: 1.2,
     posY: 75,
