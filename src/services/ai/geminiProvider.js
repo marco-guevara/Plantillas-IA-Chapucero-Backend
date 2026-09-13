@@ -23,12 +23,12 @@ const DRAFT_SCHEMA = {
     titulo: {
       type: Type.STRING,
       description:
-        'Titulo corto y contundente para el formato vertical 9:16, en espanol, sin comillas.',
+        'Titular tipo portada de periodico para el formato vertical 9:16, en espanol, MAXIMO 5 palabras y 32 caracteres. NO es una oracion completa, es un titular corto y contundente (ej. "NUEVA CICLOVIA EN EL CENTRO", no "Anuncian la construccion de una nueva ciclovia..."). Sin comillas, sin punto final.',
     },
     titulo34: {
       type: Type.STRING,
       description:
-        'Variante del titulo para el formato 3:4, puede ser igual o levemente mas breve.',
+        'Igual que titulo pero para el formato 3:4: MAXIMO 4 palabras y 26 caracteres, aun mas breve. Sin comillas, sin punto final.',
     },
     postX: {
       type: Type.STRING,

@@ -22,6 +22,16 @@ const assetTypes = new Set([
 
 const isUuid = (value) => uuidPattern.test(String(value || ''));
 
+// Fits the title font size to its length so short titles stay big and
+// bold while longer ones shrink instead of overflowing/wrapping badly.
+// Tuned against the same "tam" scale used by the manual text size slider
+// (12-100, default 55 for a ~15 char title).
+const getAutoTextSize = (text) => {
+  const length = String(text || '').trim().length || 1;
+  const size = Math.round(70 - Math.max(0, length - 10) * 0.7);
+  return Math.min(64, Math.max(26, size));
+};
+
 const getTitle = (payload = {}) => payload.titulo || payload.title || null;
 
 const findOwnedLamina = async ({ clientId, id }) => {
@@ -143,9 +153,24 @@ export const generateStudioDraft = async ({ clientId, prompt }) => {
   );
   const imagenPrincipal = images[0]?.original || null;
 
+  const titulo = draft.titulo || '';
+  const titulo34 = draft.titulo34 || draft.titulo || '';
+  const textoConfig = {
+    // Same defaults as DEFAULT_FORMAT_CONFIG.textoConfig on the frontend
+    // (src/domain/editorConfig.js) - the config-merge replaces this whole
+    // object, it does not deep-merge per field, so every field must be
+    // supplied or the sliders that read them render "NaN".
+    align: 'center',
+    color: '#ffffff',
+    lineHeight: 1.2,
+    posY: 75,
+    spacing: 1,
+    tam: getAutoTextSize(titulo.length >= titulo34.length ? titulo : titulo34),
+  };
+
   return {
-    titulo: draft.titulo || '',
-    titulo34: draft.titulo34 || draft.titulo || '',
+    titulo,
+    titulo34,
     post_x: draft.postX || '',
     hashtags: draft.hashtags || '',
     imagen_principal: imagenPrincipal,
@@ -155,5 +180,11 @@ export const generateStudioDraft = async ({ clientId, prompt }) => {
       color: 'Degradado',
       gradientColor: draft.gradientColor || '#c0392b',
     },
+    // Provided directly (not just `configuracion`) because the editor's
+    // config-merge reads config_916/config_340 first and treats a missing
+    // key as `{}`, which short-circuits before ever falling back to a flat
+    // `configuracion` object.
+    config_916: { textoConfig },
+    config_340: { textoConfig },
   };
 };
