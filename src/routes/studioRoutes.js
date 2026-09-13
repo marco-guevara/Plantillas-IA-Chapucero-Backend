@@ -9,7 +9,6 @@ import {
   uploadAsset,
 } from '../controllers/studioController.js';
 import { requireAuth } from '../middlewares/authMiddleware.js';
-import { requireStandaloneMode } from '../middlewares/modeGuardMiddleware.js';
 import { webhookRateLimit } from '../middlewares/rateLimitMiddleware.js';
 import {
   requireBodyObject,
@@ -20,7 +19,6 @@ import {
 export const studioRoutes = Router();
 
 studioRoutes.use(requireAuth);
-studioRoutes.use(requireStandaloneMode);
 studioRoutes.use(webhookRateLimit);
 
 studioRoutes.post('/laminas', requireBodyObject, saveLamina);

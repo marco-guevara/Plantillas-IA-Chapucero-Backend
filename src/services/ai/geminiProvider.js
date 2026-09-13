@@ -7,7 +7,7 @@ let client;
 
 const getClient = () => {
   if (!env.geminiApiKey) {
-    throw new ApiError(503, 'Gemini no esta configurado');
+    throw new ApiError(503, 'Gemini no está configurado');
   }
 
   if (!client) {
@@ -23,42 +23,25 @@ const DRAFT_SCHEMA = {
     titulo: {
       type: Type.STRING,
       description:
-        'Titular tipo portada de periodico para el formato vertical 9:16, en espanol, MAXIMO 5 palabras y 32 caracteres. NO es una oracion completa, es un titular corto y contundente (ej. "NUEVA CICLOVIA EN EL CENTRO", no "Anuncian la construccion de una nueva ciclovia..."). Sin comillas, sin punto final.',
+        'Titular tipo portada de periodico, en espanol, MAXIMO 5 palabras y 32 caracteres. NO es una oracion completa, es un titular corto y contundente (ej. "NUEVA CICLOVIA EN EL CENTRO", no "Anuncian la construccion de una nueva ciclovia..."). Sin comillas, sin punto final.',
     },
-    titulo34: {
+    cuerpo: {
       type: Type.STRING,
       description:
-        'Igual que titulo pero para el formato 3:4: MAXIMO 4 palabras y 26 caracteres, aun mas breve. Sin comillas, sin punto final.',
+        'Una frase breve (MAXIMO 120 caracteres) que amplia el titulo con un dato o detalle concreto, en espanol. No repite literalmente el titulo. Sin comillas.',
     },
-    postX: {
+    post: {
       type: Type.STRING,
       description:
-        'Texto corto para publicar en X (Twitter), en espanol, sin hashtags dentro (van aparte).',
+        'Texto corto para publicar en redes sociales, en espanol, sin hashtags dentro (van aparte).',
     },
     hashtags: {
       type: Type.STRING,
       description:
-        'De 2 a 5 hashtags relevantes separados por espacio, cada uno empezando con #.',
-    },
-    imageQuery: {
-      type: Type.STRING,
-      description:
-        'Terminos de busqueda cortos (nombre de una persona, lugar o evento concreto) para encontrar una foto real relacionada.',
-    },
-    gradientColor: {
-      type: Type.STRING,
-      description:
-        'Un color hexadecimal (ej. #1f6feb) que combine con el tono del tema, para un fondo degradado.',
+        'MINIMO 5 hashtags relevantes separados por espacio, cada uno empezando con #.',
     },
   },
-  required: [
-    'titulo',
-    'titulo34',
-    'postX',
-    'hashtags',
-    'imageQuery',
-    'gradientColor',
-  ],
+  required: ['titulo', 'cuerpo', 'post', 'hashtags'],
 };
 
 const buildReferenceBlock = (referenceLaminas) => {
@@ -111,6 +94,6 @@ export const generateLaminaDraft = async ({ prompt, referenceLaminas = [] }) => 
   try {
     return JSON.parse(response.text);
   } catch {
-    throw new ApiError(502, 'Gemini devolvio una respuesta invalida');
+    throw new ApiError(502, 'Gemini devolvió una respuesta inválida');
   }
 };

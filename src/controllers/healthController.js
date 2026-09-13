@@ -43,13 +43,6 @@ export const readiness = asyncHandler(async (_req, res) => {
       trustProxy: env.trustProxy,
       csrfRequired: env.csrfRequired,
     },
-    integrations: {
-      ok: Boolean(env.n8nUrl && env.hostingerUploadUrl),
-      n8nUrlConfigured: Boolean(env.n8nUrl),
-      hostingerUploadConfigured: Boolean(env.hostingerUploadUrl),
-      webhookTimeoutMs: env.webhookTimeoutMs,
-      webhookRetryAttempts: env.webhookRetryAttempts,
-    },
     rateLimits: {
       ok: true,
       windowMs: env.rateLimitWindowMs,
@@ -64,8 +57,7 @@ export const readiness = asyncHandler(async (_req, res) => {
     (!database.required || migrations.ok) &&
     checks.cors.ok &&
     checks.auth.ok &&
-    checks.cookies.ok &&
-    checks.integrations.ok;
+    checks.cookies.ok;
 
   res.status(ok ? 200 : 503).json({
     ok,

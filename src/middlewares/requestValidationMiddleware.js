@@ -123,19 +123,6 @@ export const validateUpdateClientBody = (req, _res, next) => {
   }
 };
 
-export const validateCategoryParam = (req, _res, next) => {
-  try {
-    const category = String(req.params.category || '').toLowerCase();
-    if (!['lps', 'lpm', 'lm', 'li'].includes(category)) {
-      fail([{ field: 'category', message: 'Unsupported category' }]);
-    }
-
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
-
 export const validateFormatParam = (req, _res, next) => {
   try {
     if (!['916', '340'].includes(String(req.params.format || ''))) {
