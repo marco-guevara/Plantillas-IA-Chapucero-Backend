@@ -22,14 +22,52 @@ const assetTypes = new Set([
 
 const isUuid = (value) => uuidPattern.test(String(value || ''));
 
-// Fits the title font size to its length so short titles stay big and
-// bold while longer ones shrink instead of overflowing/wrapping badly.
-// Tuned against the same "tam" scale used by the manual text size slider
-// (12-100, default 55 for a ~15 char title).
+// Fits the title font size to its length: the text zone only fits ~2 short
+// lines at the default size (55), so anything longer than a few words has
+// to shrink or it gets clipped by the canvas. Empirically ~11 characters
+// fit comfortably at tam=55, so this scales inversely from that anchor.
 const getAutoTextSize = (text) => {
   const length = String(text || '').trim().length || 1;
-  const size = Math.round(70 - Math.max(0, length - 10) * 0.7);
-  return Math.min(64, Math.max(26, size));
+  const size = Math.round(605 / length);
+  // Capped at 55 (the pre-existing manual default, already verified to
+  // look right for short titles) rather than higher - a bigger cap only
+  // helps very short titles and risks a single long word overflowing the
+  // zone width before it would ever help vertical fit.
+  return Math.min(55, Math.max(22, size));
+};
+
+// Must stay in sync with FORMAT_SPECS[format].output in
+// src/domain/laminaGeometry.js (frontend) - the fixed export canvas size
+// per format, used here to compute a "cover" crop for whatever aspect
+// ratio the auto-selected search image happens to have.
+const CANVAS_SIZE = {
+  916: { width: 1082, height: 1920 },
+  340: { width: 1082, height: 1417 },
+};
+
+// getImageBox() on the frontend (src/domain/imageGeometry.js) draws the
+// main image at canvas.width*(escala/100) wide, preserving its natural
+// aspect ratio - it never crops. Left at the default escala=100/posX=0/
+// posY=0, a landscape photo in a portrait canvas leaves a visible gap
+// below it. This computes the smallest escala that also covers the
+// canvas height, then centers the resulting overflow (canvas clips
+// anything drawn past its own edges, so this behaves like CSS
+// object-fit: cover).
+const getCoverImageConfig = ({ format, imageWidth, imageHeight }) => {
+  if (!imageWidth || !imageHeight) return null;
+
+  const canvas = CANVAS_SIZE[format];
+  const requiredScale =
+    (canvas.height * imageWidth) / (canvas.width * imageHeight);
+  const escala = Math.max(100, Math.round(requiredScale * 100));
+  const drawWidth = canvas.width * (escala / 100);
+  const drawHeight = (imageHeight * drawWidth) / imageWidth;
+
+  return {
+    escala,
+    posX: Math.round((-(drawWidth - canvas.width) / 2 / canvas.width) * 100),
+    posY: Math.round((-(drawHeight - canvas.height) / 2 / canvas.height) * 100),
+  };
 };
 
 const getTitle = (payload = {}) => payload.titulo || payload.title || null;
@@ -151,11 +189,12 @@ export const generateStudioDraft = async ({ clientId, prompt }) => {
   const images = await searchStudioImages(draft.imageQuery || trimmedPrompt).catch(
     () => [],
   );
-  const imagenPrincipal = images[0]?.original || null;
+  const selectedImage = images[0] || null;
+  const imagenPrincipal = selectedImage?.original || null;
 
   const titulo = draft.titulo || '';
   const titulo34 = draft.titulo34 || draft.titulo || '';
-  const textoConfig = {
+  const buildTextoConfig = (text) => ({
     // Same defaults as DEFAULT_FORMAT_CONFIG.textoConfig on the frontend
     // (src/domain/editorConfig.js) - the config-merge replaces this whole
     // object, it does not deep-merge per field, so every field must be
@@ -165,7 +204,18 @@ export const generateStudioDraft = async ({ clientId, prompt }) => {
     lineHeight: 1.2,
     posY: 75,
     spacing: 1,
-    tam: getAutoTextSize(titulo.length >= titulo34.length ? titulo : titulo34),
+    tam: getAutoTextSize(text),
+  });
+
+  const buildImgConfig = (format) => {
+    const cover = getCoverImageConfig({
+      format,
+      imageWidth: selectedImage?.width,
+      imageHeight: selectedImage?.height,
+    });
+    // Same defaults as DEFAULT_FORMAT_CONFIG.imgConfig - same shallow-merge
+    // caveat as textoConfig above, so every field must be supplied.
+    return cover || { escala: 100, posX: 0, posY: 0 };
   };
 
   return {
@@ -184,7 +234,13 @@ export const generateStudioDraft = async ({ clientId, prompt }) => {
     // config-merge reads config_916/config_340 first and treats a missing
     // key as `{}`, which short-circuits before ever falling back to a flat
     // `configuracion` object.
-    config_916: { textoConfig },
-    config_340: { textoConfig },
+    config_916: {
+      textoConfig: buildTextoConfig(titulo),
+      imgConfig: buildImgConfig(916),
+    },
+    config_340: {
+      textoConfig: buildTextoConfig(titulo34),
+      imgConfig: buildImgConfig(340),
+    },
   };
 };

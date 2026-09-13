@@ -25,6 +25,8 @@ export const searchSerperImages = async (query) => {
     .map((item) => ({
       original: item.imageUrl || '',
       thumbnail: item.thumbnailUrl || item.imageUrl || '',
+      width: item.imageWidth || null,
+      height: item.imageHeight || null,
     }))
     .filter((image) => image.original);
 };

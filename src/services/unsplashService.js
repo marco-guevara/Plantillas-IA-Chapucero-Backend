@@ -26,6 +26,8 @@ export const searchUnsplashImages = async (query) => {
     .map((item) => ({
       original: item.urls?.regular || '',
       thumbnail: item.urls?.thumb || item.urls?.small || '',
+      width: item.width || null,
+      height: item.height || null,
     }))
     .filter((image) => image.original);
 };
