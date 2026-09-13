@@ -50,6 +50,18 @@ export const upsertStudioLamina = async ({ clientId, payload = {} }) => {
   return { id: created.id };
 };
 
+export const deleteStudioLamina = async ({ clientId, id }) => {
+  const lamina = await findOwnedLamina({ clientId, id });
+
+  if (!lamina) {
+    throw new ApiError(404, 'Lámina no encontrada');
+  }
+
+  await lamina.destroy();
+
+  return { ok: true };
+};
+
 export const generateStudioFormat = async ({
   clientId,
   id,

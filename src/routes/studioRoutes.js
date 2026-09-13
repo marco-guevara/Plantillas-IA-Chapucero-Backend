@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import {
+  deleteLamina,
   generate,
   generateDraft,
   publish,
@@ -14,6 +15,7 @@ import {
   requireBodyObject,
   validateFormatParam,
   validateNetworkParam,
+  validateUuidParam,
 } from '../middlewares/requestValidationMiddleware.js';
 
 export const studioRoutes = Router();
@@ -22,6 +24,7 @@ studioRoutes.use(requireAuth);
 studioRoutes.use(webhookRateLimit);
 
 studioRoutes.post('/laminas', requireBodyObject, saveLamina);
+studioRoutes.delete('/laminas/:id', validateUuidParam('id'), deleteLamina);
 studioRoutes.post(
   '/laminas/generate/:format',
   validateFormatParam,

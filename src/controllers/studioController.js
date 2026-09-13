@@ -1,5 +1,6 @@
 import {
   assertUnavailable,
+  deleteStudioLamina,
   generateStudioDraft,
   generateStudioFormat,
   searchStudioImages,
@@ -15,6 +16,15 @@ export const saveLamina = asyncHandler(async (req, res) => {
   });
 
   res.json({ ok: true, ...result });
+});
+
+export const deleteLamina = asyncHandler(async (req, res) => {
+  const result = await deleteStudioLamina({
+    clientId: req.auth.client.id,
+    id: req.params.id,
+  });
+
+  res.json(result);
 });
 
 export const generate = asyncHandler(async (req, res) => {
