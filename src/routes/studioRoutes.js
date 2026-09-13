@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import {
   generate,
+  generateDraft,
   publish,
   saveLamina,
   searchImages,
@@ -30,6 +31,7 @@ studioRoutes.post(
   generate,
 );
 studioRoutes.post('/assets/upload', requireBodyObject, uploadAsset);
+studioRoutes.post('/ai/generate', requireBodyObject, generateDraft);
 studioRoutes.post('/images/search', requireBodyObject, searchImages);
 studioRoutes.post(
   '/publishing/:network',

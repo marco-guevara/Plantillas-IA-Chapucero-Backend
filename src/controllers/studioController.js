@@ -1,5 +1,6 @@
 import {
   assertUnavailable,
+  generateStudioDraft,
   generateStudioFormat,
   searchStudioImages,
   upsertStudioLamina,
@@ -46,4 +47,13 @@ export const searchImages = asyncHandler(async (req, res) => {
 
 export const publish = asyncHandler(async () => {
   assertUnavailable('La publicacion en redes');
+});
+
+export const generateDraft = asyncHandler(async (req, res) => {
+  const draft = await generateStudioDraft({
+    clientId: req.auth.client.id,
+    prompt: req.body.prompt,
+  });
+
+  res.json({ draft });
 });

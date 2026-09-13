@@ -63,6 +63,9 @@ export const env = {
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
   serperApiKey: process.env.SERPER_API_KEY || '',
   unsplashAccessKey: process.env.UNSPLASH_ACCESS_KEY || '',
+  aiProvider: process.env.AI_PROVIDER || 'gemini',
+  geminiApiKey: process.env.GEMINI_API_KEY || '',
+  geminiModel: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
   webhookTimeoutMs: Math.max(
     1_000,
     parseInteger(process.env.WEBHOOK_TIMEOUT_MS, 25_000),

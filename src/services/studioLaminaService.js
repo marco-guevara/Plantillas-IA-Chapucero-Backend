@@ -1,7 +1,9 @@
 import { Lamina, LaminaAsset } from '../models/index.js';
 import { ApiError } from '../utils/apiError.js';
 import { sanitizePayload } from '../utils/sanitizePayload.js';
+import { generateLaminaDraft } from './aiService.js';
 import { uploadAsset } from './cloudinaryService.js';
+import { listLaminaHistory } from './laminaHistoryService.js';
 import { searchSerperImages } from './serperImageSearchService.js';
 import { searchUnsplashImages } from './unsplashService.js';
 
@@ -121,4 +123,37 @@ export const searchStudioImages = async (query) => {
   }
 
   throw new ApiError(502, 'No se encontraron imagenes');
+};
+
+export const generateStudioDraft = async ({ clientId, prompt }) => {
+  const trimmedPrompt = String(prompt || '').trim();
+  if (!trimmedPrompt) {
+    throw new ApiError(400, 'Prompt is required');
+  }
+
+  const referenceLaminas = await listLaminaHistory({ clientId, limit: 6 });
+
+  const draft = await generateLaminaDraft({
+    prompt: trimmedPrompt,
+    referenceLaminas,
+  });
+
+  const images = await searchStudioImages(draft.imageQuery || trimmedPrompt).catch(
+    () => [],
+  );
+  const imagenPrincipal = images[0]?.original || null;
+
+  return {
+    titulo: draft.titulo || '',
+    titulo34: draft.titulo34 || draft.titulo || '',
+    post_x: draft.postX || '',
+    hashtags: draft.hashtags || '',
+    imagen_principal: imagenPrincipal,
+    imagenes_composicion: {},
+    tipo_composicion: 'ninguna',
+    plantilla: {
+      color: 'Degradado',
+      gradientColor: draft.gradientColor || '#c0392b',
+    },
+  };
 };

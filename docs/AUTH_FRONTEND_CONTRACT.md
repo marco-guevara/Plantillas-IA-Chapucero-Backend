@@ -79,11 +79,17 @@ Respuesta:
     "name": "Cliente",
     "role": "admin",
     "status": "active",
+    "mode": "n8n",
     "lastLoginAt": "2026-09-11T00:00:00.000Z"
   },
-  "accessToken": "jwt"
+  "accessToken": "jwt",
+  "csrfToken": "token"
 }
 ```
+
+`csrfToken` es el mismo valor que queda en la cookie `laminas_csrf_token` tras este login (se rota en cada login/refresh). El frontend debe actualizar su copia en memoria con este campo — si no lo hace, la siguiente peticion mutante falla con 403 porque el token en memoria queda desincronizado del que espera el backend. Ver `authClient.js` (`loginWithCredentials`) para la implementacion de referencia.
+
+`mode` (`n8n` | `standalone`) indica que pipeline usa este cliente — ver `AGENTS.md` del frontend, seccion "Arquitectura de clientes".
 
 Cookies httpOnly seteadas por backend:
 
@@ -113,6 +119,7 @@ Respuesta:
     "name": "Cliente",
     "role": "admin",
     "status": "active",
+    "mode": "n8n",
     "lastLoginAt": "2026-09-11T00:00:00.000Z"
   }
 }

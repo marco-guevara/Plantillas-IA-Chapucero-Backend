@@ -12,6 +12,7 @@ const serializeLamina = (lamina) => ({
   status: lamina.status,
   url916: lamina.url916,
   url340: lamina.url340,
+  payload: lamina.payload,
   metadata: lamina.metadata,
   createdAt: lamina.createdAt,
   updatedAt: lamina.updatedAt,
