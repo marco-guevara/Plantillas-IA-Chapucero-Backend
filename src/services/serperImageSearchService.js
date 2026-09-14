@@ -11,7 +11,7 @@ export const searchSerperImages = async (query) => {
       'X-API-KEY': env.serperApiKey,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ q: query }),
+    body: JSON.stringify({ q: query, num: 30 }),
   });
 
   if (!response.ok) {

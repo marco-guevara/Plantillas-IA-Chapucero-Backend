@@ -7,7 +7,8 @@ export const searchUnsplashImages = async (query) => {
 
   const url = new URL('https://api.unsplash.com/search/photos');
   url.searchParams.set('query', query);
-  url.searchParams.set('per_page', '10');
+  // 30 es el maximo por pagina que permite la API de Unsplash.
+  url.searchParams.set('per_page', '30');
 
   const response = await fetch(url, {
     headers: {
